@@ -16,5 +16,3 @@ REST methods to access a SOAP Service
 ## Contributing
 ----
 
-## Designed by 
-<madrid.johnny@gmail.com>

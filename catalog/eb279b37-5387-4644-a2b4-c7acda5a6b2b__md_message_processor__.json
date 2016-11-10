@@ -1,0 +1,11 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "OutputFromWebService"
+        }
+    },
+    "id": "eb279b37-5387-4644-a2b4-c7acda5a6b2b",
+    "version": "5.2.0.0"
+}

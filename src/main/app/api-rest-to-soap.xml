@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:ws="http://www.mulesoft.org/schema/mule/ws" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ws http://www.mulesoft.org/schema/mule/ws/current/mule-ws.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="8081" doc:name="HTTP Listener Configuration"/>
+    <ws:consumer-config name="Web_Service_Consumer" service="TshirtServicePortTypeService" port="TshirtServicePortTypePort" serviceAddress="http://tshirt-service.cloudhub.io/" wsdlLocation="http://tshirt-service.cloudhub.io/?wsdl" doc:name="Web Service Consumer"/>
+    <flow name="api-rest-to-soapFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/api/*" allowedMethods="POST" doc:name="HTTP"/>
+        <dw:transform-message metadata:id="84b4d31f-33f4-4a64-9395-b29dd8691d55" doc:name="Transform Message">
+            <dw:input-payload doc:sample="sample_data/string_2.dwl" mimeType="application/java"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/xml
+---
+payload]]></dw:set-payload>
+        </dw:transform-message>
+        <ws:consumer config-ref="Web_Service_Consumer" operation="ListInventory" doc:name="Web Service Consumer"/>
+        <dw:transform-message metadata:id="eb279b37-5387-4644-a2b4-c7acda5a6b2b" doc:name="Transform Message">
+            <dw:input-payload doc:sample="sample_data/ListInventoryResponse.xml"/>
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+%namespace ns0 http://mulesoft.org/tshirt-service
+---
+{
+	Envelope: {
+		Body: {
+			ListInventoryResponse: {
+				inventory: payload.ns0#ListInventoryResponse.*inventory map ((inventory , indexOfInventory) -> {
+					productCode: inventory.productCode,
+					size: inventory.size,
+					description: inventory.description,
+					count: inventory.count as :string
+				})
+			}
+		}
+	}
+}]]></dw:set-payload>
+        </dw:transform-message>
+    </flow>
+</mule>

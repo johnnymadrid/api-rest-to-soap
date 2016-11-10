@@ -1,13 +1,20 @@
 # API REST To SOAP
-API connectivity to SOAP Service. REST method to SOAP Service
+REST methods to access a SOAP Service
 
-## Introduction 
+## Features 
 ----
 
+## Installation 
+----
 
-## Features
-* Point One
-* Point Two 
-* Point Three
+## API Documentation 
+----
 
-Designed by <madrid.johnny@gmail.com>
+## Issues 
+----
+
+## Contributing
+----
+
+## Designed by 
+<madrid.johnny@gmail.com>
